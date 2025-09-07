@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -5,11 +6,17 @@ import { Trophy, Zap, Target, BookOpen, Star, TrendingUp } from "lucide-react";
 import GameModeCard from "@/components/GameModeCard";
 import LearningModuleCard from "@/components/LearningModuleCard";
 import StudyZoneCard from "@/components/StudyZoneCard";
+import GameScreen from "@/components/GameScreen";
+import StudyZoneScreen from "@/components/StudyZoneScreen";
+import { GameMode, MathModule } from "@/types/game";
 
 const Index = () => {
+  const [currentScreen, setCurrentScreen] = useState<'menu' | 'game' | 'study'>('menu');
+  const [selectedMode, setSelectedMode] = useState<GameMode>('climb');
+  const [selectedModule, setSelectedModule] = useState<MathModule>('multiplication');
   const gameModes = [
     {
-      id: "climb",
+      id: "climb" as GameMode,
       title: "Climb Mode",
       description: "Progress through topics step by step",
       icon: Target,
@@ -17,7 +24,7 @@ const Index = () => {
       progress: 67
     },
     {
-      id: "blitz", 
+      id: "blitz" as GameMode, 
       title: "Blitz Mode",
       description: "60-second rapid-fire challenges",
       icon: Zap,
@@ -25,7 +32,7 @@ const Index = () => {
       progress: 45
     },
     {
-      id: "marathon",
+      id: "marathon" as GameMode,
       title: "Marathon Mode", 
       description: "Perfect accuracy required",
       icon: Trophy,
@@ -35,11 +42,33 @@ const Index = () => {
   ];
 
   const learningModules = [
-    { name: "Multiplication Tables", level: 15, progress: 78 },
-    { name: "Squares & Cubes", level: 8, progress: 45 },
-    { name: "Fractions to %", level: 12, progress: 89 },
-    { name: "Mental Math Tricks", level: 5, progress: 34 }
+    { name: "Multiplication Tables", level: 15, progress: 78, module: "multiplication" as MathModule },
+    { name: "Squares & Cubes", level: 8, progress: 45, module: "squares" as MathModule },
+    { name: "Fractions to %", level: 12, progress: 89, module: "fractions" as MathModule },
+    { name: "Powers", level: 5, progress: 34, module: "powers" as MathModule }
   ];
+
+  const startGame = (mode: GameMode, module: MathModule) => {
+    setSelectedMode(mode);
+    setSelectedModule(module);
+    setCurrentScreen('game');
+  };
+
+  const startStudyZone = () => {
+    setCurrentScreen('study');
+  };
+
+  const backToMenu = () => {
+    setCurrentScreen('menu');
+  };
+
+  if (currentScreen === 'game') {
+    return <GameScreen mode={selectedMode} module={selectedModule} onBack={backToMenu} />;
+  }
+
+  if (currentScreen === 'study') {
+    return <StudyZoneScreen onBack={backToMenu} />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,10 +111,14 @@ const Index = () => {
 
         {/* Game Modes */}
         <section>
-          <h3 className="text-2xl font-bold mb-6">Choose Your Challenge</h3>
+          <h3 className="text-2xl font-bold mb-6 text-center">Choose Your Challenge</h3>
           <div className="grid md:grid-cols-3 gap-6">
             {gameModes.map((mode) => (
-              <GameModeCard key={mode.id} {...mode} />
+              <GameModeCard 
+                key={mode.id} 
+                {...mode} 
+                onClick={() => startGame(mode.id, 'multiplication')}
+              />
             ))}
           </div>
         </section>
@@ -94,20 +127,24 @@ const Index = () => {
         <section>
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-2xl font-bold">Learning Modules</h3>
-            <Button variant="outline" className="gap-2">
+            <Button onClick={startStudyZone} variant="outline" className="gap-2">
               <BookOpen className="w-4 h-4" />
               Study Zone
             </Button>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             {learningModules.map((module, index) => (
-              <LearningModuleCard key={index} {...module} />
+              <LearningModuleCard 
+                key={index} 
+                {...module} 
+                onClick={() => startGame('climb', module.module)}
+              />
             ))}
           </div>
         </section>
 
         {/* Study Zone */}
-        <StudyZoneCard />
+        <StudyZoneCard onEnterStudyZone={startStudyZone} />
 
         {/* Daily Challenge */}
         <section>

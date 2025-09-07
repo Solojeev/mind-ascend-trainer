@@ -2,13 +2,17 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Brain, Lightbulb, RotateCcw } from "lucide-react";
 
-const StudyZoneCard = () => {
+interface StudyZoneCardProps {
+  onEnterStudyZone: () => void;
+}
+
+const StudyZoneCard = ({ onEnterStudyZone }: StudyZoneCardProps) => {
   return (
     <section>
       <h3 className="text-2xl font-bold mb-6">Study Zone</h3>
       <div className="grid md:grid-cols-3 gap-6">
         {/* Flashcards */}
-        <Card className="card-interactive p-6 cursor-pointer border-primary/30">
+        <Card className="card-interactive p-6 cursor-pointer border-primary/30 shadow-primary" onClick={onEnterStudyZone}>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
               <BookOpen className="w-6 h-6 text-primary" />
@@ -66,7 +70,7 @@ const StudyZoneCard = () => {
         </Card>
 
         {/* Quick Tricks */}
-        <Card className="card-interactive p-6 cursor-pointer border-success/30">
+        <Card className="card-interactive p-6 cursor-pointer border-success/30 shadow-success" onClick={onEnterStudyZone}>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-xl bg-success/20 flex items-center justify-center">
               <Lightbulb className="w-6 h-6 text-success" />

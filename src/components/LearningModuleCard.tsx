@@ -5,6 +5,7 @@ interface LearningModuleCardProps {
   name: string;
   level: number;
   progress: number;
+  module: string;
   onClick?: () => void;
 }
 
